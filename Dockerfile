@@ -71,11 +71,12 @@ RUN git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm \
 
 COPY entrypoint.sh /
 
+WORKDIR /work
+
 # Git prompt
 RUN chmod +x /entrypoint.sh \
    && wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -qO /root/.git-prompt.sh \
-   && chmod +x /root/.git-prompt.sh
-
-WORKDIR /work
+   && chmod +x /root/.git-prompt.sh \
+   && ln -s /work /root/work
 
 ENTRYPOINT ["/entrypoint.sh"]
