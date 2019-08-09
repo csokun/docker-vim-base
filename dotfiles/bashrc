@@ -1,0 +1,2 @@
+source /root/.git-prompt.sh
+PS1='\[\e[32m\]\u\[\e[m\]\[\e[35m\]@\h\[\e[m\]:\w$(__git_ps1 " (%s)")\n $ '

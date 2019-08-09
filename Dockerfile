@@ -52,11 +52,13 @@ COPY --from=builder /usr/local/bin/ /usr/local/bin
 COPY --from=builder /usr/local/share/vim/ /usr/local/share/vim/
 # NOTE: man page is ignored
 
+COPY dotfiles/bashrc /root/.bashrc
+COPY dotfiles/tmux.conf /root/.tmux.conf
+COPY dotfiles/vimrc /root/.vimrc
+
 RUN git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm \
    && git clone https://github.com/tmux-plugins/tmux-sensible ~/.tmux/plugins/tmux-sensible \
    && git clone https://github.com/tmux-plugins/tmux-resurrect ~/.tmux/plugins/tmux-resurrect \
-   && wget https://raw.githubusercontent.com/csokun/ubuntu-dev-station/master/.tmux.conf -qO ~/.tmux.conf \
-   && wget https://raw.githubusercontent.com/csokun/ubuntu-dev-station/master/.vimrc -qO ~/.vimrc \
    && git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim \
 # Install Powerline Fonts
    && mkdir -p ~/.fonts ~/.config/fontconfig/conf.d \
@@ -67,6 +69,13 @@ RUN git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm \
 # Install VIM plugins
    && echo | echo | vim +PluginInstall +qall
 
+COPY entrypoint.sh /
+
+# Git prompt
+RUN chmod +x /entrypoint.sh \
+   && wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -qO /root/.git-prompt.sh \
+   && chmod +x /root/.git-prompt.sh
+
 WORKDIR /work
 
-ENTRYPOINT ["bash", "-c", "TERM=xterm-256color tmux"]
+ENTRYPOINT ["/entrypoint.sh"]
